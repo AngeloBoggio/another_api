@@ -1,0 +1,3 @@
+This is my sandbox for developing an api that uses faker api to get mock data of books. I'm using this mock data to practice TS syntax for extracting data from json payloads and then utilizing Prisma ORM with a Postgres DB
+to also practice ORM queries....
+*_*
