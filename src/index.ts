@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const _quantity = 300;
+const _quantity = 100;
 
-interface FakeBookResponse {
+interface MockBookResponse {
     "id": number,
     "title": string,
     "author": string,
@@ -14,27 +14,25 @@ interface FakeBookResponse {
     "publisher": string
 }
 
-interface FakeBookResponseWrapper {
-    "data": FakeBookResponse[]
+interface MockBookResponseWrapper {
+    "data": MockBookResponse[]
 }
 
 async function main() {
     try {
-        const response = await axios.get<FakeBookResponseWrapper>(
+        const response = await axios.get<MockBookResponseWrapper>(
             'http://localhost:4000/api/fake-book',
             { params: { _quantity } }
         );
 
-        const fakeBooks = response.data.data;
-        console.log('Raw fake book response:', fakeBooks)
+        const mockBooks = response.data.data;
 
-        if (fakeBooks.length === 0) {
+        if (mockBooks.length === 0) {
             return;
         }
 
-        for (let i = 0; i < fakeBooks.length; i++) {
-            const book = fakeBooks[i];
-            const created = await axios.post('http://localhost:4000/api/books', {
+        const createdBooks = await Promise.all(mockBooks.map(async book => {
+            const bookData = {
                 title: book.title,
                 author: book.author,
                 genre: book.genre,
@@ -43,9 +41,11 @@ async function main() {
                 image: book.image,
                 published: book.published,
                 publisher: book.publisher
-            });
-            console.log(`Book ${i + 1} created:`, created.data);
-        }
+            };
+            const createBook = await axios.post('http://localhost:4000/api/books', bookData);
+            return createBook.data;
+        }));
+        console.log('Created books:', createdBooks);
     } catch (error) {
         console.error('Error creating book:', error);
     }
