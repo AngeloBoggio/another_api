@@ -7,3 +7,5 @@ to also practice ORM queries...
 - ExpressJS
 - Prisma ORM / Postgres
 - Axios
+- React/ Vite
+- JWT/ bcrpt
